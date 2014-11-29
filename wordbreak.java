@@ -1,23 +1,31 @@
 public class Solution {
-    
-    public boolean wordBreak(String s, Set<String> dict) {
-        boolean[] check = new boolean[s.length()+1];
-        check[0] = true;
-        for(int i = 0; i < s.length(); i++){
-            if(!check[i]){
-                continue;
-            }
-            for(String m : dict){
-                int len = m.length();
-                if(i+len > s.length()){
-                    continue;
-                }
-                if(s.substring(i,i+len).equals(m)){
-                    check[len+i] = true;
+    public ArrayList<String> wordBreak(String s, Set<String> dict) {
+        // Note: The Solution object is instantiated only once and is reused by each test case.
+        Map<String, ArrayList<String>> map = new HashMap<String, ArrayList<String>>();
+        return wordBreakHelper(s,dict,map);
+    }
+
+    public ArrayList<String> wordBreakHelper(String s, Set<String> dict, Map<String, ArrayList<String>> memo){
+        if(memo.containsKey(s)) return memo.get(s);
+        ArrayList<String> result = new ArrayList<String>();
+        int n = s.length();
+        if(n <= 0) return result;
+        for(int len = 1; len <= n; ++len){
+            String subfix = s.substring(0,len);
+            if(dict.contains(subfix)){
+                if(len == n){
+                    result.add(subfix);
+                }else{
+                    String prefix = s.substring(len);
+                    ArrayList<String> tmp = wordBreakHelper(prefix, dict, memo);
+                    for(String item:tmp){
+                        item = subfix + " " + item;
+                        result.add(item);
+                    }
                 }
             }
         }
-        return check[s.length()];
-      
+        memo.put(s, result);
+        return result;
     }
 }
