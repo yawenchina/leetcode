@@ -10,54 +10,55 @@
  * }
  */
 public class Solution {
-    
     public void reorderList(ListNode head) {
-        if (head == null || head.next == null) {
-            return;
+        if(head == null || head.next == null){
+            return ;
         }
         ListNode mid = findMiddle(head);
-        ListNode rev = reverse(mid.next);
+        ListNode right = reverse(mid.next);
         mid.next = null;
-        merge(head,rev);
+        merge(head,right);
     }
-    public ListNode findMiddle(ListNode head){
-        ListNode fast = head.next;
+    public static ListNode findMiddle(ListNode head){
         ListNode slow = head;
+        ListNode fast = head.next;
         while(fast != null && fast.next != null){
             fast = fast.next.next;
             slow = slow.next;
         }
         return slow;
     }
-    public ListNode reverse(ListNode mid){
-        ListNode rev = null;
-        while(mid != null){
-            ListNode temp = mid.next;
-            mid.next = rev;
-            rev = mid;
-            mid = temp;
+    public static ListNode reverse(ListNode head){
+        ListNode end = null;
+        while(head != null){
+            ListNode next = head.next;
+            head.next = end;
+            end = head;
+            head =next;
         }
-        return rev;
+        return end;
     }
-    public void merge(ListNode l1, ListNode l2){
+    public static ListNode merge(ListNode first,ListNode last){
+        ListNode result = new ListNode(-1);
         int index = 0;
-        ListNode dummy = new ListNode(0);
-        while(l1 != null && l2 != null){
+        ListNode move = result;
+        while(first != null && last != null){
             if(index%2 == 0){
-                dummy.next = l1;
-                l1 = l1.next;
+            move.next = first;
+            first = first.next;
             }else{
-                dummy.next = l2;
-                l2 = l2.next;
+            move.next = last;
+            last = last.next;
             }
-            dummy = dummy.next;
             index++;
+            move = move.next;
         }
-        if(l1 != null){
-            dummy.next = l1;
+        if(first != null){
+            move.next = first;
         }
-        if(l2 != null){
-            dummy.next = l2;
+        if(last != null){
+            move.next = last;
         }
+        return result.next;
     }
 }
